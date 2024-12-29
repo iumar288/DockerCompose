@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "StrongPassword!123"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+    networks:
+      - app-network
+
+  jhipster:
+    image: your-dockerhub-username/jhipster:mssql
+    container_name: jhipster-mssql
+    depends_on:
+      - mssql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:sqlserver://mssql:1433;databaseName=jhipsterdb
+      SPRING_DATASOURCE_USERNAME: sa
+      SPRING_DATASOURCE_PASSWORD: StrongPassword!123
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  cassandra:
+    image: cassandra:4
+    container_name: cassandra
+    environment:
+      CASSANDRA_CLUSTER_NAME: "JHipsterCluster"
+      CASSANDRA_DC: "datacenter1"
+    ports:
+      - "9042:9042"
+    networks:
+      - app-network
+
+  jhipster:
+    image: your-dockerhub-username/jhipster:cassandra
+    container_name: jhipster-cassandra
+    depends_on:
+      - cassandra
+    environment:
+      SPRING_DATA_CASSANDRA_CONTACT_POINTS: cassandra
+      SPRING_DATA_CASSANDRA_PORT: 9042
+      SPRING_DATA_CASSANDRA_KEYSPACE_NAME: jhipsterdb
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
